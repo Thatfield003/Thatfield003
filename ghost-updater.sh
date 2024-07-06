@@ -11,24 +11,15 @@ WEBP="webp"
 
 date=$(date)
 git pull origin master
-# Ensure we're in the correct directory
-cd /home/thatfield/ghost
-
-# Remove existing docs directory and create a new one
-rm -rf docs
+rm -r docs
 mkdir docs
-
-# Create CNAME file
-echo $URL > docs/CNAME
-
-# Run ecto1.py
+cd docs
+echo $URL > CNAME
+cd -
 ECTO1_SOURCE=http://$SERVERIP:2368 ECTO1_TARGET=https://$URL python3 ecto1.py
-
-# Create images directory in docs
-mkdir -p docs/content/images
-
-# Copy images from the mapped volume to the docs directory
-cp -r ghost/content/images/. docs/content/images
+cd docs
+docker cp ghost:/var/lib/ghost/content/images/. content/images
+cd -
 IMGMSG="No image optimization was used"
 while getopts ":o:" opt; do
   case $opt in
