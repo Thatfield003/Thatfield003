@@ -1,48 +1,57 @@
 #!/bin/bash
 
-URL="tadhatfield.com" #Change this to your url
-SERVERIP="localhost" #Change this to your server ip if Ghost is on another machine
+# Set variables
+URL="tadhatfield.com"  # Change this to your URL if different
+SERVERIP="localhost"  # Change this to your server IP if Ghost is on another machine
+GHOST_CONTENT_PATH="/home/thatfield/ghost/content"
 
-# this is needed or me running the script on my own website for this very page will break the script by replacing all the filetypes.
+# Set file extensions
 PNG="png"
 JPG="jpg"
 JPEG="jpeg"
 WEBP="webp"
 
+# Get current date
 date=$(date)
+
+# Pull latest changes from git
 git pull origin master
-rm -r docs
-mkdir docs
-cd docs
-echo $URL > CNAME
-cd -
+
+# Recreate docs directory
+rm -rf docs
+mkdir -p docs/content/images
+
+# Create CNAME file
+echo $URL > docs/CNAME
+
+# Run ecto1.py
 ECTO1_SOURCE=http://$SERVERIP:2368 ECTO1_TARGET=https://$URL python3 ecto1.py
-cd docs
-docker cp ghost:/var/lib/ghost/content/images/. content/images
-cd -
+
+# Copy images from Ghost content to docs
+echo "Copying images from $GHOST_CONTENT_PATH/images to docs/content/images"
+cp -rv $GHOST_CONTENT_PATH/images/. docs/content/images/
+
+# Initialize image optimization message
 IMGMSG="No image optimization was used"
+
+# Process command line options
 while getopts ":o:" opt; do
   case $opt in
     o)
       arg_o="$OPTARG"
       echo "Option -o with argument: $arg_o"
-      if [ $arg_o = "webp" ]; then
+      if [ "$arg_o" = "webp" ]; then
         echo 'Conversion to webp has started'
-        sleep 1
-        find docs/content/images/. -type f -regex ".*\.\($JPG\|$JPEG\|$PNG\)" -exec mogrify -format webp {}  \; -print
-        find docs/content/images/. -type f -regex ".*\.\($JPG\|$JPEG\|$PNG\)" -exec rm {}  \; -print
-        grep -lR ".$JPG" docs/ | xargs sed -i 's/\.$JPG/\.$WEBP/g'
-        grep -lR ".$JPEG" docs/ | xargs sed -i 's/\.$JPEG/\.$WEBP/g'
-        grep -lR ".$PNG" docs/ | xargs sed -i 's/\.$PNG/\.$WEBP/g'
+        find docs/content/images -type f \( -iname "*.${JPG}" -o -iname "*.${JPEG}" -o -iname "*.${PNG}" \) -exec mogrify -format webp {} + 
+        find docs/content/images -type f \( -iname "*.${JPG}" -o -iname "*.${JPEG}" -o -iname "*.${PNG}" \) -delete
+        grep -rlZ "\.$JPG\|\.$JPEG\|\.$PNG" docs | xargs -0 sed -i "s/\.$JPG/.$WEBP/g; s/\.$JPEG/.$WEBP/g; s/\.$PNG/.$WEBP/g"
         echo 'Conversion to webp has completed'
         IMGMSG="Images converted to webp"
       else
         echo 'Standard image optimization has started'
-        sleep 1
-        #credit goes to julianxhokaxhiu for these commands 
-        find . -type f -iname "*.$PNG" -exec optipng -nb -nc {} \;
-        find . -type f -iname "*.$PNG" -exec pngcrush -rem gAMA -rem alla -rem cHRM -rem iCCP -rem sRGB -rem time -ow {} \;
-        find . -type f \( -iname "*.$JPG" -o -iname "*.$JPEG" \) -exec jpegoptim -f --strip-all {} \;
+        find docs/content/images -type f -iname "*.${PNG}" -exec optipng -nb -nc {} +
+        find docs/content/images -type f -iname "*.${PNG}" -exec pngcrush -rem gAMA -rem alla -rem cHRM -rem iCCP -rem sRGB -rem time -ow {} +
+        find docs/content/images -type f \( -iname "*.${JPG}" -o -iname "*.${JPEG}" \) -exec jpegoptim -f --strip-all {} +
         echo 'Standard image optimization has completed'
         IMGMSG="Standard image optimization was used"
       fi
@@ -53,7 +62,11 @@ while getopts ":o:" opt; do
       ;;
   esac
 done
+
+# Commit and push changes
 git add .
 git commit -m "Compiled Changes - $date | $IMGMSG" ghost-updater.sh ecto1.py requirements.txt README.md serve.py docs/.
 git config --global credential.helper store
 git push -u origin master
+
+echo "Script completed successfully."
