@@ -1,0 +1,12 @@
+---
+title: Books I've Read Recently
+permalink: /books/
+description: Books Tad Hatfield has read recently.
+width: wide
+---
+{%- comment -%} The list lives in _data/books.yml {%- endcomment -%}
+<ul class="book-grid">
+  {%- for book in site.data.books %}
+  {% include book.html book=book %}
+  {%- endfor %}
+</ul>
