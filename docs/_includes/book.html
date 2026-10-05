@@ -1,0 +1,8 @@
+{%- assign book = include.book -%}
+<li class="book">
+  <div class="book-cover">
+    <img src="{{ '/assets/images/books/' | append: book.cover | relative_url }}" alt="Cover of {{ book.title | escape }}" loading="lazy">
+  </div>
+  <p class="book-title">{{ book.title }}</p>
+  <p class="book-author">{{ book.author }}</p>
+</li>

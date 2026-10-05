@@ -1,0 +1,16 @@
+{%- assign post = include.post -%}
+<article class="post-card{% if post.cover %} has-image{% endif %}">
+  {%- if post.cover %}
+  <a class="post-card-image" href="{{ post.url | relative_url }}" tabindex="-1" aria-hidden="true">
+    <img src="{{ post.cover | escape }}" alt="" loading="lazy" width="1200" height="800">
+  </a>
+  {%- endif %}
+  <div class="post-card-body">
+    <p class="meta"><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%B %-d, %Y' }}</time></p>
+    <h3 class="post-card-title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+    {%- if post.description %}
+    <p>{{ post.description }}</p>
+    {%- endif %}
+    <a class="more" href="{{ post.url | relative_url }}" aria-hidden="true" tabindex="-1">Read post &rarr;</a>
+  </div>
+</article>

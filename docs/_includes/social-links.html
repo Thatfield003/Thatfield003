@@ -1,0 +1,9 @@
+<ul class="social">
+  {%- for link in site.social %}
+  <li>
+    <a href="{{ link.url }}" rel="me noopener" target="_blank" aria-label="{{ link.name }}" title="{{ link.name }}">
+      <svg class="icon" aria-hidden="true"><use href="#icon-{{ link.icon }}"></use></svg>
+    </a>
+  </li>
+  {%- endfor %}
+</ul>

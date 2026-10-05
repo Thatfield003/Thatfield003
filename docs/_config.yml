@@ -1,0 +1,81 @@
+# Site settings. GitHub Pages rebuilds the site automatically on every push
+# to master, so editing this file (or any page/post) is all it takes.
+# Restart `bundle exec jekyll serve` after changing this file locally.
+
+title: Tad Hatfield
+description: Portfolio, projects, and reading list
+url: https://tadhatfield.com
+baseurl: "" # served from the root of the custom domain (see CNAME)
+repository: Thatfield003/Thatfield003
+lang: en
+logo: /assets/images/icon.png
+
+author:
+  name: Tad Hatfield
+  email: thatfield003@gmail.com
+
+# Default social-share image (used when a page doesn't set its own `image`).
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: page
+      image: https://images.unsplash.com/photo-1718906457196-3d3523107ef0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMTc3M3wwfDF8YWxsfDI2fHx8fHx8Mnx8MTcyMDMzMzE5MXw&ixlib=rb-4.0.3&q=80&w=2000
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+
+# Links in the header (pages) and the header/footer icons (social).
+navigation:
+  - title: Home
+    url: /
+  - title: About
+    url: /about/
+  - title: Posts
+    url: /posts/
+  - title: Resume
+    url: /resume/
+  - title: Books
+    url: /books/
+
+social:
+  - name: LinkedIn
+    icon: linkedin
+    url: https://www.linkedin.com/in/thaddeus-hatfield-923755253/
+  - name: GitHub
+    icon: github
+    url: https://github.com/Thatfield003
+  - name: YouTube
+    icon: youtube
+    url: https://www.youtube.com/channel/UCd2WePML8fpHSbMOlubRXSA
+  - name: ResearchGate
+    icon: researchgate
+    url: https://www.researchgate.net/profile/Thaddeus-Hatfield
+
+# Keep the same URLs the Ghost site used (e.g. /first-post/, /rss.xml).
+permalink: /:title/
+feed:
+  path: rss.xml
+
+markdown: kramdown
+timezone: America/Chicago
+
+# No GitHub Pages theme: the layouts and CSS in this folder are the whole design.
+# (Without this, GitHub applies its default "Primer" theme, which overwrites
+# assets/css/style.css.)
+theme: null
+
+# Only plugins on the GitHub Pages allow-list: https://pages.github.com/versions/
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-redirect-from
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor
