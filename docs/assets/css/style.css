@@ -231,6 +231,8 @@ h3 { font-size: 1.25rem; margin: 1.75rem 0 0.5rem; }
   overflow: hidden;
   background: var(--inset);
 }
+.prose .map-link { margin-top: 0.75rem; font-weight: 600; text-align: right; }
+.map-link a { text-decoration: none; }
 
 /* ---------- Books ---------- */
 
